@@ -1,6 +1,9 @@
+
 /* =========================================================
    NOVEL READER
    LOGIN SYSTEM
+   VERSION 1.0
+   Google Apps Script Authentication
    ========================================================= */
 
 
@@ -11,25 +14,21 @@
 const LOGIN_CONFIG = {
 
     /*
-     * false = mode demo
-     * true  = menggunakan API
+     * Google Apps Script Web App
      */
-    useApi: false,
+    apiUrl:
+        "https://script.google.com/macros/s/AKfycbyIXvAoxY7Vmh3Rb8HdgF2CtIqm97eCoezRp1t5ql53fmotUEl6G-l-txRhoGDtskcsLg/exec",
 
     /*
-     * Nanti bisa diganti dengan endpoint backend.
+     * Halaman Reader setelah login berhasil.
      */
-    apiUrl: "https://novelrinuxant.github.io/login/",
+    redirectUrl:
+        "https://novelrinuxant.github.io/reader/",
 
     /*
-     * Halaman tujuan setelah login berhasil.
+     * Delay kecil agar loading terlihat.
      */
-    redirectUrl: "https://github.com/novelRinuxAnt/reader/",
-
-    /*
-     * Waktu simulasi login demo.
-     */
-    demoDelay: 700
+    redirectDelay: 500
 
 };
 
@@ -82,36 +81,55 @@ const yearElement =
    YEAR
    --------------------------------------------------------- */
 
-yearElement.textContent =
-    new Date().getFullYear();
+if (yearElement) {
+
+    yearElement.textContent =
+        new Date().getFullYear();
+
+}
 
 
 /* ---------------------------------------------------------
    SHOW / HIDE PASSWORD
    --------------------------------------------------------- */
 
-togglePassword.addEventListener("click", function () {
+if (togglePassword) {
 
-    const isPassword =
-        passwordInput.type === "password";
+    togglePassword.addEventListener(
+        "click",
+        function () {
 
-
-    passwordInput.type =
-        isPassword ? "text" : "password";
-
-
-    eyeIcon.textContent =
-        isPassword ? "🙈" : "👁";
+            const isPassword =
+                passwordInput.type === "password";
 
 
-    togglePassword.setAttribute(
-        "aria-label",
-        isPassword
-            ? "Sembunyikan password"
-            : "Tampilkan password"
+            passwordInput.type =
+                isPassword
+                    ? "text"
+                    : "password";
+
+
+            if (eyeIcon) {
+
+                eyeIcon.textContent =
+                    isPassword
+                        ? "🙈"
+                        : "👁";
+
+            }
+
+
+            togglePassword.setAttribute(
+                "aria-label",
+                isPassword
+                    ? "Sembunyikan password"
+                    : "Tampilkan password"
+            );
+
+        }
     );
 
-});
+}
 
 
 /* ---------------------------------------------------------
@@ -120,7 +138,14 @@ togglePassword.addEventListener("click", function () {
 
 function showMessage(message, type) {
 
-    loginMessage.textContent = message;
+    if (!loginMessage) {
+        return;
+    }
+
+
+    loginMessage.textContent =
+        message;
+
 
     loginMessage.className =
         "login-message show " + type;
@@ -130,7 +155,14 @@ function showMessage(message, type) {
 
 function clearMessage() {
 
-    loginMessage.textContent = "";
+    if (!loginMessage) {
+        return;
+    }
+
+
+    loginMessage.textContent =
+        "";
+
 
     loginMessage.className =
         "login-message";
@@ -144,11 +176,28 @@ function clearMessage() {
 
 function setLoading(isLoading) {
 
-    loginButton.disabled = isLoading;
+    if (loginButton) {
 
-    loginButtonText.hidden = isLoading;
+        loginButton.disabled =
+            isLoading;
 
-    loginLoading.hidden = !isLoading;
+    }
+
+
+    if (loginButtonText) {
+
+        loginButtonText.hidden =
+            isLoading;
+
+    }
+
+
+    if (loginLoading) {
+
+        loginLoading.hidden =
+            !isLoading;
+
+    }
 
 }
 
@@ -169,13 +218,14 @@ function validateForm() {
     if (!username) {
 
         showMessage(
-            "Username atau email wajib diisi.",
+            "Username wajib diisi.",
             "error"
         );
 
         usernameInput.focus();
 
         return false;
+
     }
 
 
@@ -189,6 +239,7 @@ function validateForm() {
         passwordInput.focus();
 
         return false;
+
     }
 
 
@@ -202,65 +253,11 @@ function validateForm() {
         passwordInput.focus();
 
         return false;
+
     }
 
 
     return true;
-}
-
-
-/* ---------------------------------------------------------
-   DEMO LOGIN
-   --------------------------------------------------------- */
-
-async function demoLogin(username, password) {
-
-    await new Promise(function (resolve) {
-
-        setTimeout(
-            resolve,
-            LOGIN_CONFIG.demoDelay
-        );
-
-    });
-
-
-    /*
-     * Akun demo.
-     *
-     * JANGAN digunakan untuk sistem produksi.
-     */
-
-    const demoUser = {
-        username: "demo",
-        password: "123456"
-    };
-
-
-    if (
-        username !== demoUser.username ||
-        password !== demoUser.password
-    ) {
-
-        return {
-            success: false,
-            message:
-                "Username atau password salah."
-        };
-
-    }
-
-
-    return {
-
-        success: true,
-
-        user: {
-            username: "demo",
-            name: "Pengguna Demo"
-        }
-
-    };
 
 }
 
@@ -269,40 +266,92 @@ async function demoLogin(username, password) {
    API LOGIN
    --------------------------------------------------------- */
 
+/*
+ * Google Apps Script menggunakan:
+ *
+ * GET
+ * ?username=...
+ * &password=...
+ *
+ * Contoh:
+ *
+ * /exec?username=085722207569&password=TPLBK12345
+ *
+ */
+
 async function apiLogin(username, password) {
 
+    const url =
+        new URL(
+            LOGIN_CONFIG.apiUrl
+        );
+
+
+    /*
+     * Username dan password dimasukkan
+     * sebagai query parameter.
+     */
+    url.searchParams.set(
+        "username",
+        username
+    );
+
+
+    url.searchParams.set(
+        "password",
+        password
+    );
+
+
+    /*
+     * Request ke Google Apps Script.
+     */
     const response =
         await fetch(
-            LOGIN_CONFIG.apiUrl,
+            url.toString(),
             {
-                method: "POST",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body: JSON.stringify({
-
-                    username: username,
-
-                    password: password
-
-                })
+                method: "GET",
+                cache: "no-store"
             }
         );
 
 
+    /*
+     * Periksa HTTP response.
+     */
     if (!response.ok) {
 
         throw new Error(
-            "Server login gagal."
+            "Server login gagal. HTTP " +
+            response.status
         );
 
     }
 
 
-    return await response.json();
+    /*
+     * Ambil JSON.
+     */
+    const result =
+        await response.json();
+
+
+    /*
+     * Pastikan response berbentuk object.
+     */
+    if (
+        !result ||
+        typeof result !== "object"
+    ) {
+
+        throw new Error(
+            "Response server tidak valid."
+        );
+
+    }
+
+
+    return result;
 
 }
 
@@ -311,19 +360,48 @@ async function apiLogin(username, password) {
    SAVE SESSION
    --------------------------------------------------------- */
 
-function saveSession(user, remember) {
+function saveSession(
+    result,
+    remember
+) {
+
+    /*
+     * Data yang disimpan.
+     *
+     * Password TIDAK disimpan.
+     */
 
     const session = {
 
         loggedIn: true,
 
-        user: user,
+        username:
+            result.username || "",
+
+        folder:
+            result.folder || "",
+
+        total:
+            Number(result.total || 0),
+
+        files:
+            Array.isArray(result.files)
+                ? result.files
+                : [],
 
         loginTime:
             new Date().toISOString()
 
     };
 
+
+    /*
+     * Jika Remember Me dicentang,
+     * gunakan localStorage.
+     *
+     * Jika tidak,
+     * gunakan sessionStorage.
+     */
 
     const storage =
         remember
@@ -338,8 +416,7 @@ function saveSession(user, remember) {
 
 
     /*
-     * Jika sebelumnya ada session di storage lain,
-     * hapus supaya tidak terjadi konflik.
+     * Hapus session dari storage lainnya.
      */
 
     const otherStorage =
@@ -356,159 +433,16 @@ function saveSession(user, remember) {
 
 
 /* ---------------------------------------------------------
-   LOGIN
+   GET CURRENT SESSION
    --------------------------------------------------------- */
 
-loginForm.addEventListener(
-    "submit",
-    async function (event) {
-
-        event.preventDefault();
-
-        clearMessage();
-
-
-        if (!validateForm()) {
-            return;
-        }
-
-
-        const username =
-            usernameInput.value.trim();
-
-        const password =
-            passwordInput.value;
-
-        const remember =
-            rememberInput.checked;
-
-
-        setLoading(true);
-
-
-        try {
-
-            let result;
-
-
-            if (LOGIN_CONFIG.useApi) {
-
-                result =
-                    await apiLogin(
-                        username,
-                        password
-                    );
-
-            } else {
-
-                result =
-                    await demoLogin(
-                        username,
-                        password
-                    );
-
-            }
-
-
-            if (!result.success) {
-
-                showMessage(
-                    result.message ||
-                    "Login gagal.",
-                    "error"
-                );
-
-                return;
-            }
-
-
-            saveSession(
-                result.user,
-                remember
-            );
-
-
-            showMessage(
-                "Login berhasil. Mengalihkan...",
-                "success"
-            );
-
-
-            setTimeout(function () {
-
-                window.location.href =
-                    LOGIN_CONFIG.redirectUrl;
-
-            }, 500);
-
-
-        } catch (error) {
-
-            console.error(error);
-
-            showMessage(
-                "Terjadi kesalahan saat menghubungi server.",
-                "error"
-            );
-
-        } finally {
-
-            setLoading(false);
-
-        }
-
-    }
-);
-
-
-/* ---------------------------------------------------------
-   FORGOT PASSWORD
-   --------------------------------------------------------- */
-
-forgotPassword.addEventListener(
-    "click",
-    function (event) {
-
-        event.preventDefault();
-
-        showMessage(
-            "Fitur lupa password akan tersedia setelah sistem akun terhubung ke backend.",
-            "error"
-        );
-
-    }
-);
-
-
-/* ---------------------------------------------------------
-   REGISTER
-   --------------------------------------------------------- */
-
-registerLink.addEventListener(
-    "click",
-    function (event) {
-
-        event.preventDefault();
-
-        showMessage(
-            "Halaman pendaftaran akan dibuat pada modul berikutnya.",
-            "error"
-        );
-
-    }
-);
-
-
-/* ---------------------------------------------------------
-   CHECK EXISTING SESSION
-   --------------------------------------------------------- */
-
-function checkExistingSession() {
+function getStoredSession() {
 
     const localSession =
         localStorage.getItem(
             "novelReaderSession"
         );
+
 
     const sessionSession =
         sessionStorage.getItem(
@@ -517,44 +451,307 @@ function checkExistingSession() {
 
 
     const session =
-        localSession || sessionSession;
+        localSession ||
+        sessionSession;
 
 
     if (!session) {
-        return;
+
+        return null;
+
     }
 
 
     try {
 
-        const data =
-            JSON.parse(session);
-
-
-        if (data.loggedIn) {
-
-            /*
-             * Untuk sementara tidak otomatis redirect.
-             * Ini memudahkan pengujian halaman login.
-             */
-
-            console.log(
-                "Session ditemukan:",
-                data
-            );
-
-        }
+        return JSON.parse(session);
 
     } catch (error) {
 
         console.error(
-            "Session tidak valid.",
+            "Session tidak valid:",
             error
+        );
+
+
+        localStorage.removeItem(
+            "novelReaderSession"
+        );
+
+
+        sessionStorage.removeItem(
+            "novelReaderSession"
+        );
+
+
+        return null;
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   LOGIN
+   --------------------------------------------------------- */
+
+if (loginForm) {
+
+    loginForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+
+            clearMessage();
+
+
+            /*
+             * Validasi form.
+             */
+
+            if (!validateForm()) {
+
+                return;
+
+            }
+
+
+            const username =
+                usernameInput.value.trim();
+
+            const password =
+                passwordInput.value;
+
+            const remember =
+                rememberInput
+                    ? rememberInput.checked
+                    : false;
+
+
+            /*
+             * Aktifkan loading.
+             */
+
+            setLoading(true);
+
+
+            try {
+
+                /*
+                 * Login ke Google Apps Script.
+                 */
+
+                const result =
+                    await apiLogin(
+                        username,
+                        password
+                    );
+
+
+                console.log(
+                    "Response login:",
+                    result
+                );
+
+
+                /*
+                 * Periksa hasil login.
+                 */
+
+                if (!result.success) {
+
+                    showMessage(
+                        result.message ||
+                        "Username atau password salah.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                 * Pastikan data files tersedia.
+                 */
+
+                if (
+                    !Array.isArray(
+                        result.files
+                    )
+                ) {
+
+                    showMessage(
+                        "Login berhasil, tetapi daftar WebP tidak ditemukan.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                 * Simpan session.
+                 */
+
+                saveSession(
+                    result,
+                    remember
+                );
+
+
+                /*
+                 * Tampilkan pesan berhasil.
+                 */
+
+                showMessage(
+                    "Login berhasil. Membuka Reader...",
+                    "success"
+                );
+
+
+                /*
+                 * Redirect ke Reader.
+                 */
+
+                setTimeout(
+                    function () {
+
+                        window.location.href =
+                            LOGIN_CONFIG.redirectUrl;
+
+                    },
+                    LOGIN_CONFIG.redirectDelay
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Login error:",
+                    error
+                );
+
+
+                showMessage(
+                    "Tidak dapat menghubungi server login. Silakan coba lagi.",
+                    "error"
+                );
+
+
+            } finally {
+
+                setLoading(false);
+
+            }
+
+        }
+    );
+
+}
+
+
+/* ---------------------------------------------------------
+   FORGOT PASSWORD
+   --------------------------------------------------------- */
+
+if (forgotPassword) {
+
+    forgotPassword.addEventListener(
+        "click",
+        function (event) {
+
+            event.preventDefault();
+
+
+            showMessage(
+                "Fitur lupa password belum tersedia.",
+                "error"
+            );
+
+        }
+    );
+
+}
+
+
+/* ---------------------------------------------------------
+   REGISTER
+   --------------------------------------------------------- */
+
+if (registerLink) {
+
+    registerLink.addEventListener(
+        "click",
+        function (event) {
+
+            event.preventDefault();
+
+
+            showMessage(
+                "Pendaftaran akun belum tersedia pada versi 1.0.",
+                "error"
+            );
+
+        }
+    );
+
+}
+
+
+/* ---------------------------------------------------------
+   CHECK EXISTING SESSION
+   --------------------------------------------------------- */
+
+function checkExistingSession() {
+
+    const session =
+        getStoredSession();
+
+
+    if (!session) {
+
+        return;
+
+    }
+
+
+    /*
+     * Jangan otomatis redirect.
+     *
+     * Ini tetap memungkinkan pengguna
+     * melihat halaman login.
+     */
+
+    if (
+        session.loggedIn &&
+        Array.isArray(session.files)
+    ) {
+
+        console.log(
+            "Session Novel Reader ditemukan:",
+            {
+                username:
+                    session.username,
+
+                total:
+                    session.total,
+
+                files:
+                    session.files.length
+            }
         );
 
     }
 
 }
 
+
+/* ---------------------------------------------------------
+   INITIALIZE
+   --------------------------------------------------------- */
 
 checkExistingSession();
