@@ -19,12 +19,12 @@ const LOGIN_CONFIG = {
     /*
      * Nanti bisa diganti dengan endpoint backend.
      */
-    apiUrl: "https://example.com/api/login",
+    apiUrl: "https://novelrinuxant.github.io/login/",
 
     /*
      * Halaman tujuan setelah login berhasil.
      */
-    redirectUrl: "../",
+    redirectUrl: "https://github.com/novelRinuxAnt/reader/",
 
     /*
      * Waktu simulasi login demo.
