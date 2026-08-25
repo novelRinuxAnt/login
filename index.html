@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login — Novel Reader</title>
+
+    <meta
+        name="description"
+        content="Login ke Novel Reader"
+    >
+
+    <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <section class="login-card">
+
+            <div class="brand">
+                <div class="brand-logo">
+                    <img src="assets/logo.svg" alt="Novel Reader">
+                </div>
+
+                <h1>Novel Reader</h1>
+                <p>Masuk untuk melanjutkan membaca</p>
+            </div>
+
+
+            <form id="loginForm" class="login-form" autocomplete="on">
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Username atau Email
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Masukkan username atau email"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="password-wrapper">
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Masukkan password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="password-toggle"
+                            aria-label="Tampilkan password"
+                        >
+                            <span id="eyeIcon">👁</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="login-options">
+
+                    <label class="remember">
+
+                        <input
+                            type="checkbox"
+                            id="remember"
+                            name="remember"
+                        >
+
+                        <span>Ingat saya</span>
+
+                    </label>
+
+                    <a href="#" id="forgotPassword">
+                        Lupa password?
+                    </a>
+
+                </div>
+
+
+                <div
+                    id="loginMessage"
+                    class="login-message"
+                    role="alert"
+                    aria-live="polite"
+                ></div>
+
+
+                <button
+                    type="submit"
+                    id="loginButton"
+                    class="login-button"
+                >
+                    <span id="loginButtonText">
+                        Masuk
+                    </span>
+
+                    <span
+                        id="loginLoading"
+                        class="loading"
+                        hidden
+                    >
+                        Memproses...
+                    </span>
+                </button>
+
+            </form>
+
+
+            <div class="divider">
+                <span>atau</span>
+            </div>
+
+
+            <div class="register-area">
+
+                <p>
+                    Belum memiliki akun?
+                    <a href="#" id="registerLink">
+                        Daftar sekarang
+                    </a>
+                </p>
+
+            </div>
+
+
+            <footer class="login-footer">
+
+                <span>
+                    © <span id="year"></span> Novel Reader
+                </span>
+
+            </footer>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/login.js"></script>
+
+</body>
+</html>
