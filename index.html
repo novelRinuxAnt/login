@@ -1,106 +1,55 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <title>Login — Novel Reader</title>
 
-    <meta name="theme-color"
-          content="#111111">
+    <meta
+        name="description"
+        content="Login ke Novel Reader"
+    >
 
-    <title>Login — Novel RINU'XANT</title>
-
-    <link rel="stylesheet"
-          href="style.css">
-
+    <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/login.css">
 </head>
-
 
 <body>
 
-
     <main class="login-page">
-
-
-        <!-- =================================================
-             LOGIN CARD
-        ================================================== -->
 
         <section class="login-card">
 
+            <div class="brand">
+                <div class="brand-logo">
+                    <img src="assets/logo.svg" alt="Novel Reader">
+                </div>
 
-            <!-- =================================================
-                 LOGO
-            ================================================== -->
-
-            <div class="logo-container">
-
-                <img src="assets/logo.svg"
-                     class="logo"
-                     alt="Novel RINU'XANT">
-
+                <h1>Novel Reader</h1>
+                <p>Masuk untuk melanjutkan membaca</p>
             </div>
 
 
-            <!-- =================================================
-                 TITLE
-            ================================================== -->
-
-            <div class="login-header">
-
-                <h1>
-                    Novel RINU'XANT
-                </h1>
-
-                <p>
-                    Silakan masuk untuk membaca novel
-                </p>
-
-            </div>
-
-
-            <!-- =================================================
-                 MESSAGE
-            ================================================== -->
-
-            <div id="loginMessage"
-                 class="login-message"
-                 aria-live="polite">
-            </div>
-
-
-            <!-- =================================================
-                 FORM
-            ================================================== -->
-
-            <form id="loginForm"
-                  autocomplete="on">
-
-
-                <!-- USERNAME -->
+            <form id="loginForm" class="login-form" autocomplete="on">
 
                 <div class="form-group">
 
                     <label for="username">
-                        Username
+                        Username atau Email
                     </label>
 
                     <input
+                        type="text"
                         id="username"
                         name="username"
-                        type="text"
-                        inputmode="tel"
+                        placeholder="Masukkan username atau email"
                         autocomplete="username"
-                        placeholder="Masukkan username"
-                        required>
+                        required
+                    >
 
                 </div>
 
-
-                <!-- PASSWORD -->
 
                 <div class="form-group">
 
@@ -108,28 +57,24 @@
                         Password
                     </label>
 
-
                     <div class="password-wrapper">
 
                         <input
+                            type="password"
                             id="password"
                             name="password"
-                            type="password"
-                            autocomplete="current-password"
                             placeholder="Masukkan password"
-                            required>
-
+                            autocomplete="current-password"
+                            required
+                        >
 
                         <button
+                            type="button"
                             id="togglePassword"
                             class="password-toggle"
-                            type="button"
-                            aria-label="Tampilkan password">
-
-                            <span id="eyeIcon">
-                                👁
-                            </span>
-
+                            aria-label="Tampilkan password"
+                        >
+                            <span id="eyeIcon">👁</span>
                         </button>
 
                     </div>
@@ -137,124 +82,87 @@
                 </div>
 
 
-                <!-- OPTIONS -->
-
                 <div class="login-options">
 
-
-                    <label class="remember-label">
+                    <label class="remember">
 
                         <input
+                            type="checkbox"
                             id="remember"
                             name="remember"
-                            type="checkbox">
+                        >
 
-                        <span>
-                            Ingat saya
-                        </span>
+                        <span>Ingat saya</span>
 
                     </label>
 
-
-                    <button
-                        id="forgotPassword"
-                        class="forgot-button"
-                        type="button">
-
+                    <a href="#" id="forgotPassword">
                         Lupa password?
-
-                    </button>
-
+                    </a>
 
                 </div>
 
 
-                <!-- =================================================
-                     LOGIN BUTTON
-                ================================================== -->
+                <div
+                    id="loginMessage"
+                    class="login-message"
+                    role="alert"
+                    aria-live="polite"
+                ></div>
+
 
                 <button
+                    type="submit"
                     id="loginButton"
                     class="login-button"
-                    type="submit">
-
-
+                >
                     <span id="loginButtonText">
                         Masuk
                     </span>
 
-
-                    <span id="loginLoading"
-                          class="login-loading"
-                          hidden>
-
-                        <span class="spinner"></span>
-
-                        <span>
-                            Memproses
-                        </span>
-
+                    <span
+                        id="loginLoading"
+                        class="loading"
+                        hidden
+                    >
+                        Memproses...
                     </span>
-
-
                 </button>
-
 
             </form>
 
 
-            <!-- =================================================
-                 REGISTER
-            ================================================== -->
+            <div class="divider">
+                <span>atau</span>
+            </div>
+
 
             <div class="register-area">
 
-                <span>
-                    Belum mempunyai akun?
-                </span>
-
-
-                <button
-                    id="registerLink"
-                    class="register-button"
-                    type="button">
-
-                    Daftar Sekarang
-
-                </button>
+                <p>
+                    Belum memiliki akun?
+                    <a href="#" id="registerLink">
+                        Daftar sekarang
+                    </a>
+                </p>
 
             </div>
 
 
-            <!-- =================================================
-                 FOOTER
-            ================================================== -->
-
-            <div class="login-footer">
+            <footer class="login-footer">
 
                 <span>
-                    ©
+                    © <span id="year"></span> Novel Reader
                 </span>
 
-                <span id="year">
-                    2026
-                </span>
-
-                <span>
-                    Novel RINU'XANT
-                </span>
-
-            </div>
-
+            </footer>
 
         </section>
-
 
     </main>
 
 
-    <script src="login.js"></script>
+    <script src="js/login.js"></script>
 
 </body>
-
 </html>
