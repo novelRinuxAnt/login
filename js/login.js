@@ -1,14 +1,14 @@
 /* =========================================================
    NOVEL RINU'XANT
    LOGIN SYSTEM
-   VERSION 2.0 FINAL
+   VERSION 2.1 FINAL
    Google Apps Script Authentication
    ========================================================= */
 
 
 /* =========================================================
    CONFIGURATION
-========================================================= */
+   ========================================================= */
 
 const LOGIN_CONFIG = {
 
@@ -35,7 +35,7 @@ const LOGIN_CONFIG = {
 
 /* =========================================================
    ELEMENTS
-========================================================= */
+   ========================================================= */
 
 const loginForm =
     document.getElementById("loginForm");
@@ -67,19 +67,13 @@ const loginLoading =
 const loginMessage =
     document.getElementById("loginMessage");
 
-const forgotPassword =
-    document.getElementById("forgotPassword");
-
-const registerLink =
-    document.getElementById("registerLink");
-
 const yearElement =
     document.getElementById("year");
 
 
 /* =========================================================
    YEAR
-========================================================= */
+   ========================================================= */
 
 if (yearElement) {
 
@@ -91,7 +85,7 @@ if (yearElement) {
 
 /* =========================================================
    PASSWORD TOGGLE
-========================================================= */
+   ========================================================= */
 
 if (
     togglePassword &&
@@ -137,7 +131,7 @@ if (
 
 /* =========================================================
    MESSAGE
-========================================================= */
+   ========================================================= */
 
 function showMessage(
     message,
@@ -183,7 +177,7 @@ function clearMessage() {
 
 /* =========================================================
    LOADING
-========================================================= */
+   ========================================================= */
 
 function setLoading(
     isLoading
@@ -217,7 +211,7 @@ function setLoading(
 
 /* =========================================================
    VALIDATION
-========================================================= */
+   ========================================================= */
 
 function validateForm() {
 
@@ -296,7 +290,7 @@ function validateForm() {
 
 /* =========================================================
    API LOGIN
-========================================================= */
+   ========================================================= */
 
 async function apiLogin(
     username,
@@ -310,7 +304,7 @@ async function apiLogin(
 
 
     /*
-     * Parameter username
+     * Username
      */
     url.searchParams.set(
         "username",
@@ -319,7 +313,7 @@ async function apiLogin(
 
 
     /*
-     * Parameter password
+     * Password
      */
     url.searchParams.set(
         "password",
@@ -407,7 +401,7 @@ async function apiLogin(
 
 /* =========================================================
    VALIDATE FILE DATA
-========================================================= */
+   ========================================================= */
 
 function validateFiles(
     files
@@ -432,10 +426,7 @@ function validateFiles(
 
 
     /*
-     * Periksa beberapa file pertama.
-     *
-     * Kita tidak perlu memeriksa
-     * seluruh 256 file.
+     * Periksa maksimal 3 file pertama
      */
 
     for (
@@ -503,21 +494,12 @@ function validateFiles(
 
 /* =========================================================
    SAVE SESSION
-========================================================= */
+   ========================================================= */
 
 function saveSession(
     result,
     remember
 ) {
-
-    /*
-     * ======================================================
-     * PENTING
-     * ======================================================
-     *
-     * Kita simpan URL WebP dari GS
-     * TANPA mengubahnya.
-     */
 
     const session = {
 
@@ -546,8 +528,7 @@ function saveSession(
 
 
     /*
-     * Bersihkan session lama
-     * terlebih dahulu.
+     * Hapus session lama
      */
 
     localStorage.removeItem(
@@ -561,7 +542,7 @@ function saveSession(
 
 
     /*
-     * Tentukan storage.
+     * Tentukan storage
      */
 
     const storage =
@@ -571,7 +552,7 @@ function saveSession(
 
 
     /*
-     * Simpan session baru.
+     * Simpan session
      */
 
     storage.setItem(
@@ -614,7 +595,7 @@ function saveSession(
 
 /* =========================================================
    GET STORED SESSION
-========================================================= */
+   ========================================================= */
 
 function getStoredSession() {
 
@@ -675,7 +656,7 @@ function getStoredSession() {
 
 /* =========================================================
    LOGIN PROCESS
-========================================================= */
+   ========================================================= */
 
 if (loginForm) {
 
@@ -683,19 +664,29 @@ if (loginForm) {
         "submit",
         async function (event) {
 
+            /*
+             * Hentikan submit HTML biasa
+             */
             event.preventDefault();
 
 
+            /*
+             * Bersihkan pesan lama
+             */
             clearMessage();
 
 
             /*
              * Validasi
              */
-
             if (
                 !validateForm()
             ) {
+
+                /*
+                 * Pastikan tombol normal
+                 */
+                setLoading(false);
 
                 return;
 
@@ -716,9 +707,20 @@ if (loginForm) {
                     : false;
 
 
-            setLoading(
-                true
-            );
+            /*
+             * =================================================
+             * MULAI LOADING
+             * =================================================
+             *
+             * Pada titik ini:
+             *
+             * Masuk
+             *   ↓
+             * Memproses...
+             *
+             */
+
+            setLoading(true);
 
 
             try {
@@ -758,6 +760,11 @@ if (loginForm) {
                         "error"
                     );
 
+
+                    /*
+                     * finally akan mengembalikan
+                     * tombol menjadi "Masuk"
+                     */
 
                     return;
 
@@ -845,9 +852,23 @@ if (loginForm) {
 
             } finally {
 
-                setLoading(
-                    false
-                );
+                /*
+                 * =================================================
+                 * KEMBALIKAN TOMBOL
+                 * =================================================
+                 *
+                 * Jika login gagal:
+                 *
+                 * Memproses...
+                 *       ↓
+                 * Masuk
+                 *
+                 * Jika login berhasil:
+                 * halaman akan redirect ke Reader.
+                 *
+                 */
+
+                setLoading(false);
 
             }
 
@@ -859,55 +880,31 @@ if (loginForm) {
 
 /* =========================================================
    FORGOT PASSWORD
-========================================================= */
+   ========================================================= */
 
-if (forgotPassword) {
-
-    forgotPassword.addEventListener(
-        "click",
-        function (event) {
-
-            event.preventDefault();
-
-
-            showMessage(
-                "Fitur lupa password belum tersedia.",
-                "error"
-            );
-
-        }
-    );
-
-}
+/*
+ * JANGAN menggunakan event.preventDefault()
+ * di sini.
+ *
+ * Link langsung membuka WhatsApp.
+ */
 
 
 /* =========================================================
    REGISTER
-========================================================= */
+   ========================================================= */
 
-if (registerLink) {
-
-    registerLink.addEventListener(
-        "click",
-        function (event) {
-
-            event.preventDefault();
-
-
-            showMessage(
-                "Pendaftaran akun belum tersedia pada versi 1.0.",
-                "error"
-            );
-
-        }
-    );
-
-}
+/*
+ * JANGAN menggunakan event.preventDefault()
+ * di sini.
+ *
+ * Link langsung membuka WhatsApp.
+ */
 
 
 /* =========================================================
    CHECK EXISTING SESSION
-========================================================= */
+   ========================================================= */
 
 function checkExistingSession() {
 
@@ -954,6 +951,6 @@ function checkExistingSession() {
 
 /* =========================================================
    INITIALIZE
-========================================================= */
+   ========================================================= */
 
 checkExistingSession();
