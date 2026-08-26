@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Login — Novel Reader</title>
 
@@ -11,30 +17,72 @@
         content="Login ke Novel Reader"
     >
 
-    <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="css/login.css">
+    <!-- FAVICON / LOGO -->
+    <link
+        rel="icon"
+        href="assets/logo.svg"
+        type="image/svg+xml"
+    >
+
+    <!-- CSS -->
+    <link
+        rel="stylesheet"
+        href="css/login.css"
+    >
+
 </head>
+
 
 <body>
 
+
+    <!-- =====================================================
+         LOGIN PAGE
+         ===================================================== -->
+
     <main class="login-page">
+
+
+        <!-- =================================================
+             LOGIN CARD
+             ================================================= -->
 
         <section class="login-card">
 
+
+            <!-- =================================================
+                 BRAND
+                 ================================================= -->
+
             <div class="brand">
 
+
                 <div class="brand-logo">
-                    <img src="assets/logo.svg" alt="Novel Reader">
+
+                    <img
+                        src="assets/logo.svg"
+                        alt="Novel Reader"
+                    >
+
                 </div>
 
-                <h1>Novel RINU'Xant</h1>
+
+                <h1>
+                    Novel Reader
+                </h1>
+
 
                 <p>
                     Masuk untuk melanjutkan membaca
                 </p>
 
+
             </div>
 
+
+            <!-- =================================================
+                 LOGIN FORM
+                 ================================================= -->
 
             <form
                 id="loginForm"
@@ -42,12 +90,16 @@
                 autocomplete="on"
             >
 
+
                 <!-- USERNAME -->
+
                 <div class="form-group">
+
 
                     <label for="username">
                         Username atau Email
                     </label>
+
 
                     <input
                         type="text"
@@ -58,17 +110,22 @@
                         required
                     >
 
+
                 </div>
 
 
                 <!-- PASSWORD -->
+
                 <div class="form-group">
+
 
                     <label for="password">
                         Password
                     </label>
 
+
                     <div class="password-wrapper">
+
 
                         <input
                             type="password"
@@ -79,24 +136,34 @@
                             required
                         >
 
+
                         <button
                             type="button"
                             id="togglePassword"
                             class="password-toggle"
                             aria-label="Tampilkan password"
                         >
-                            <span id="eyeIcon">👁</span>
+
+                            <span id="eyeIcon">
+                                👁
+                            </span>
+
                         </button>
 
+
                     </div>
+
 
                 </div>
 
 
                 <!-- OPTIONS -->
+
                 <div class="login-options">
 
+
                     <label class="remember">
+
 
                         <input
                             type="checkbox"
@@ -104,12 +171,19 @@
                             name="remember"
                         >
 
+
                         <span>
                             Ingat saya
                         </span>
 
+
                     </label>
 
+
+                    <!--
+                        LUPA PASSWORD
+                        Langsung ke WhatsApp
+                    -->
 
                     <a
                         href="https://wa.me/6285722207569?text=saya%20lupa%20password."
@@ -120,10 +194,12 @@
                         Lupa password?
                     </a>
 
+
                 </div>
 
 
                 <!-- LOGIN MESSAGE -->
+
                 <div
                     id="loginMessage"
                     class="login-message"
@@ -133,19 +209,27 @@
 
 
                 <!-- LOGIN BUTTON -->
+
                 <button
                     type="submit"
                     id="loginButton"
                     class="login-button"
                 >
 
-                    <!-- TAMPIL SAAT BELUM DIKLIK -->
+
+                    <!--
+                        TAMPIL SAAT BELUM LOGIN
+                    -->
+
                     <span id="loginButtonText">
                         Masuk
                     </span>
 
 
-                    <!-- TERSEMBUNYI SAAT AWAL -->
+                    <!--
+                        TERSEMBUNYI SAAT AWAL
+                    -->
+
                     <span
                         id="loginLoading"
                         class="loading"
@@ -154,12 +238,17 @@
                         Memproses...
                     </span>
 
+
                 </button>
+
 
             </form>
 
 
-            <!-- DIVIDER -->
+            <!-- =================================================
+                 DIVIDER
+                 ================================================= -->
+
             <div class="divider">
 
                 <span>
@@ -169,12 +258,22 @@
             </div>
 
 
-            <!-- REGISTER -->
+            <!-- =================================================
+                 REGISTER
+                 ================================================= -->
+
             <div class="register-area">
+
 
                 <p>
 
                     Belum memiliki akun?
+
+
+                    <!--
+                        DAFTAR SEKARANG
+                        Langsung ke WhatsApp
+                    -->
 
                     <a
                         href="https://wa.me/6285722207569?text=Halo%2C%20saya%20ingin%20membeli%20Novel."
@@ -185,13 +284,19 @@
                         Daftar sekarang
                     </a>
 
+
                 </p>
+
 
             </div>
 
 
-            <!-- FOOTER -->
+            <!-- =================================================
+                 FOOTER
+                 ================================================= -->
+
             <footer class="login-footer">
+
 
                 <span>
 
@@ -201,59 +306,23 @@
 
                 </span>
 
+
             </footer>
 
+
         </section>
+
 
     </main>
 
 
-    <!-- JAVASCRIPT LOGIN -->
+    <!-- =====================================================
+         LOGIN JAVASCRIPT
+         ===================================================== -->
+
     <script src="js/login.js"></script>
 
 
-    <!-- JAVASCRIPT TOMBOL LOGIN -->
-    <script>
-
-        const loginForm =
-            document.getElementById("loginForm");
-
-        const loginButton =
-            document.getElementById("loginButton");
-
-        const loginButtonText =
-            document.getElementById("loginButtonText");
-
-        const loginLoading =
-            document.getElementById("loginLoading");
-
-
-        /*
-         * Saat form LOGIN dikirim
-         */
-        loginForm.addEventListener("submit", function () {
-
-            /*
-             * Sembunyikan tulisan "Masuk"
-             */
-            loginButtonText.hidden = true;
-
-
-            /*
-             * Tampilkan "Memproses..."
-             */
-            loginLoading.hidden = false;
-
-
-            /*
-             * Nonaktifkan tombol
-             * agar tidak diklik berkali-kali
-             */
-            loginButton.disabled = true;
-
-        });
-
-    </script>
-
 </body>
+
 </html>
