@@ -360,16 +360,7 @@ async function apiLogin(username, password) {
    SAVE SESSION
    --------------------------------------------------------- */
 
-function saveSession(
-    result,
-    remember
-) {
-
-    /*
-     * Data yang disimpan.
-     *
-     * Password TIDAK disimpan.
-     */
+function saveSession(result, remember) {
 
     const session = {
 
@@ -377,9 +368,6 @@ function saveSession(
 
         username:
             result.username || "",
-
-        folder:
-            result.folder || "",
 
         total:
             Number(result.total || 0),
@@ -396,11 +384,7 @@ function saveSession(
 
 
     /*
-     * Jika Remember Me dicentang,
-     * gunakan localStorage.
-     *
-     * Jika tidak,
-     * gunakan sessionStorage.
+     * Storage utama
      */
 
     const storage =
@@ -409,6 +393,10 @@ function saveSession(
             : sessionStorage;
 
 
+    /*
+     * Simpan session.
+     */
+
     storage.setItem(
         "novelReaderSession",
         JSON.stringify(session)
@@ -416,7 +404,21 @@ function saveSession(
 
 
     /*
-     * Hapus session dari storage lainnya.
+     * Simpan juga sebagai
+     * novelReaderData.
+     *
+     * Ini untuk kompatibilitas
+     * dengan Reader.
+     */
+
+    storage.setItem(
+        "novelReaderData",
+        JSON.stringify(session)
+    );
+
+
+    /*
+     * Bersihkan storage lainnya.
      */
 
     const otherStorage =
@@ -429,8 +431,11 @@ function saveSession(
         "novelReaderSession"
     );
 
-}
+    otherStorage.removeItem(
+        "novelReaderData"
+    );
 
+}
 
 /* ---------------------------------------------------------
    GET CURRENT SESSION
