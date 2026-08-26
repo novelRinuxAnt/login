@@ -1,15 +1,14 @@
-
 /* =========================================================
-   NOVEL READER
+   NOVEL RINU'XANT
    LOGIN SYSTEM
-   VERSION 1.0
+   VERSION 2.0 FINAL
    Google Apps Script Authentication
    ========================================================= */
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    CONFIGURATION
-   --------------------------------------------------------- */
+========================================================= */
 
 const LOGIN_CONFIG = {
 
@@ -20,22 +19,23 @@ const LOGIN_CONFIG = {
         "https://script.google.com/macros/s/AKfycbyJUFKi2cIQdlxtWQ6pYyHb6XhBfSgxKK6vjHRNNve0G6Lcyx9XQhJWLlBA3VbB3Q6tlQ/exec",
 
     /*
-     * Halaman Reader setelah login berhasil.
+     * Reader
      */
     redirectUrl:
         "https://novelrinuxant.github.io/reader/",
 
     /*
-     * Delay kecil agar loading terlihat.
+     * Delay redirect
      */
-    redirectDelay: 500
+    redirectDelay:
+        500
 
 };
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    ELEMENTS
-   --------------------------------------------------------- */
+========================================================= */
 
 const loginForm =
     document.getElementById("loginForm");
@@ -77,9 +77,9 @@ const yearElement =
     document.getElementById("year");
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    YEAR
-   --------------------------------------------------------- */
+========================================================= */
 
 if (yearElement) {
 
@@ -89,11 +89,14 @@ if (yearElement) {
 }
 
 
-/* ---------------------------------------------------------
-   SHOW / HIDE PASSWORD
-   --------------------------------------------------------- */
+/* =========================================================
+   PASSWORD TOGGLE
+========================================================= */
 
-if (togglePassword) {
+if (
+    togglePassword &&
+    passwordInput
+) {
 
     togglePassword.addEventListener(
         "click",
@@ -132,14 +135,19 @@ if (togglePassword) {
 }
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    MESSAGE
-   --------------------------------------------------------- */
+========================================================= */
 
-function showMessage(message, type) {
+function showMessage(
+    message,
+    type
+) {
 
     if (!loginMessage) {
+
         return;
+
     }
 
 
@@ -148,7 +156,8 @@ function showMessage(message, type) {
 
 
     loginMessage.className =
-        "login-message show " + type;
+        "login-message show " +
+        type;
 
 }
 
@@ -156,7 +165,9 @@ function showMessage(message, type) {
 function clearMessage() {
 
     if (!loginMessage) {
+
         return;
+
     }
 
 
@@ -170,11 +181,13 @@ function clearMessage() {
 }
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    LOADING
-   --------------------------------------------------------- */
+========================================================= */
 
-function setLoading(isLoading) {
+function setLoading(
+    isLoading
+) {
 
     if (loginButton) {
 
@@ -202,14 +215,25 @@ function setLoading(isLoading) {
 }
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    VALIDATION
-   --------------------------------------------------------- */
+========================================================= */
 
 function validateForm() {
 
+    if (
+        !usernameInput ||
+        !passwordInput
+    ) {
+
+        return false;
+
+    }
+
+
     const username =
         usernameInput.value.trim();
+
 
     const password =
         passwordInput.value;
@@ -222,7 +246,9 @@ function validateForm() {
             "error"
         );
 
+
         usernameInput.focus();
+
 
         return false;
 
@@ -236,21 +262,27 @@ function validateForm() {
             "error"
         );
 
+
         passwordInput.focus();
+
 
         return false;
 
     }
 
 
-    if (password.length < 6) {
+    if (
+        password.length < 6
+    ) {
 
         showMessage(
             "Password minimal 6 karakter.",
             "error"
         );
 
+
         passwordInput.focus();
+
 
         return false;
 
@@ -262,24 +294,14 @@ function validateForm() {
 }
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    API LOGIN
-   --------------------------------------------------------- */
+========================================================= */
 
-/*
- * Google Apps Script menggunakan:
- *
- * GET
- * ?username=...
- * &password=...
- *
- * Contoh:
- *
- * /exec?username=085722207569&password=TPLBK12345
- *
- */
-
-async function apiLogin(username, password) {
+async function apiLogin(
+    username,
+    password
+) {
 
     const url =
         new URL(
@@ -288,8 +310,7 @@ async function apiLogin(username, password) {
 
 
     /*
-     * Username dan password dimasukkan
-     * sebagai query parameter.
+     * Parameter username
      */
     url.searchParams.set(
         "username",
@@ -297,55 +318,83 @@ async function apiLogin(username, password) {
     );
 
 
+    /*
+     * Parameter password
+     */
     url.searchParams.set(
         "password",
         password
     );
 
 
-    /*
-     * Request ke Google Apps Script.
-     */
+    console.log(
+        "Menghubungi API:",
+        url.toString()
+    );
+
+
     const response =
         await fetch(
             url.toString(),
             {
-                method: "GET",
-                cache: "no-store"
+                method:
+                    "GET",
+
+                cache:
+                    "no-store",
+
+                redirect:
+                    "follow"
             }
         );
 
 
-    /*
-     * Periksa HTTP response.
-     */
     if (!response.ok) {
 
         throw new Error(
-            "Server login gagal. HTTP " +
+            "HTTP " +
             response.status
         );
 
     }
 
 
-    /*
-     * Ambil JSON.
-     */
-    const result =
-        await response.json();
+    const text =
+        await response.text();
 
 
-    /*
-     * Pastikan response berbentuk object.
-     */
+    console.log(
+        "Raw API response:",
+        text
+    );
+
+
+    let result;
+
+
+    try {
+
+        result =
+            JSON.parse(
+                text
+            );
+
+    } catch (error) {
+
+        throw new Error(
+            "Response API bukan JSON."
+        );
+
+    }
+
+
     if (
         !result ||
         typeof result !== "object"
     ) {
 
         throw new Error(
-            "Response server tidak valid."
+            "Response API tidak valid."
         );
 
     }
@@ -356,24 +405,137 @@ async function apiLogin(username, password) {
 }
 
 
-/* ---------------------------------------------------------
-   SAVE SESSION
-   --------------------------------------------------------- */
+/* =========================================================
+   VALIDATE FILE DATA
+========================================================= */
 
-function saveSession(result, remember) {
+function validateFiles(
+    files
+) {
+
+    if (
+        !Array.isArray(files)
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        files.length === 0
+    ) {
+
+        return false;
+
+    }
+
+
+    /*
+     * Periksa beberapa file pertama.
+     *
+     * Kita tidak perlu memeriksa
+     * seluruh 256 file.
+     */
+
+    for (
+        let i = 0;
+        i < Math.min(
+            files.length,
+            3
+        );
+        i++
+    ) {
+
+        const file =
+            files[i];
+
+
+        if (!file) {
+
+            return false;
+
+        }
+
+
+        if (!file.id) {
+
+            console.error(
+                "File tidak memiliki ID:",
+                file
+            );
+
+            return false;
+
+        }
+
+
+        if (!file.name) {
+
+            console.error(
+                "File tidak memiliki nama:",
+                file
+            );
+
+            return false;
+
+        }
+
+
+        if (!file.url) {
+
+            console.error(
+                "File tidak memiliki URL:",
+                file
+            );
+
+            return false;
+
+        }
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   SAVE SESSION
+========================================================= */
+
+function saveSession(
+    result,
+    remember
+) {
+
+    /*
+     * ======================================================
+     * PENTING
+     * ======================================================
+     *
+     * Kita simpan URL WebP dari GS
+     * TANPA mengubahnya.
+     */
 
     const session = {
 
-        loggedIn: true,
+        loggedIn:
+            true,
 
         username:
             result.username || "",
 
         total:
-            Number(result.total || 0),
+            Number(
+                result.total || 0
+            ),
 
         files:
-            Array.isArray(result.files)
+            Array.isArray(
+                result.files
+            )
                 ? result.files
                 : [],
 
@@ -384,7 +546,22 @@ function saveSession(result, remember) {
 
 
     /*
-     * Storage utama
+     * Bersihkan session lama
+     * terlebih dahulu.
+     */
+
+    localStorage.removeItem(
+        "novelReaderSession"
+    );
+
+
+    sessionStorage.removeItem(
+        "novelReaderSession"
+    );
+
+
+    /*
+     * Tentukan storage.
      */
 
     const storage =
@@ -394,52 +571,50 @@ function saveSession(result, remember) {
 
 
     /*
-     * Simpan session.
+     * Simpan session baru.
      */
 
     storage.setItem(
         "novelReaderSession",
-        JSON.stringify(session)
+        JSON.stringify(
+            session
+        )
     );
 
 
     /*
-     * Simpan juga sebagai
-     * novelReaderData.
-     *
-     * Ini untuk kompatibilitas
-     * dengan Reader.
+     * DEBUG
      */
 
-    storage.setItem(
-        "novelReaderData",
-        JSON.stringify(session)
+    console.log(
+        "SESSION TERSIMPAN:",
+        session
     );
 
 
-    /*
-     * Bersihkan storage lainnya.
-     */
-
-    const otherStorage =
-        remember
-            ? sessionStorage
-            : localStorage;
-
-
-    otherStorage.removeItem(
-        "novelReaderSession"
+    console.log(
+        "Jumlah halaman:",
+        session.files.length
     );
 
-    otherStorage.removeItem(
-        "novelReaderData"
-    );
+
+    if (
+        session.files.length > 0
+    ) {
+
+        console.log(
+            "URL page-0001:",
+            session.files[0].url
+        );
+
+    }
 
 }
 
-/* ---------------------------------------------------------
-   GET CURRENT SESSION
-   --------------------------------------------------------- */
+
+/* =========================================================
+   GET STORED SESSION
+========================================================= */
 
 function getStoredSession() {
 
@@ -455,12 +630,12 @@ function getStoredSession() {
         );
 
 
-    const session =
+    const saved =
         localSession ||
         sessionSession;
 
 
-    if (!session) {
+    if (!saved) {
 
         return null;
 
@@ -469,12 +644,14 @@ function getStoredSession() {
 
     try {
 
-        return JSON.parse(session);
+        return JSON.parse(
+            saved
+        );
 
     } catch (error) {
 
         console.error(
-            "Session tidak valid:",
+            "Session rusak:",
             error
         );
 
@@ -496,9 +673,9 @@ function getStoredSession() {
 }
 
 
-/* ---------------------------------------------------------
-   LOGIN
-   --------------------------------------------------------- */
+/* =========================================================
+   LOGIN PROCESS
+========================================================= */
 
 if (loginForm) {
 
@@ -513,10 +690,12 @@ if (loginForm) {
 
 
             /*
-             * Validasi form.
+             * Validasi
              */
 
-            if (!validateForm()) {
+            if (
+                !validateForm()
+            ) {
 
                 return;
 
@@ -526,8 +705,10 @@ if (loginForm) {
             const username =
                 usernameInput.value.trim();
 
+
             const password =
                 passwordInput.value;
+
 
             const remember =
                 rememberInput
@@ -535,17 +716,17 @@ if (loginForm) {
                     : false;
 
 
-            /*
-             * Aktifkan loading.
-             */
-
-            setLoading(true);
+            setLoading(
+                true
+            );
 
 
             try {
 
                 /*
-                 * Login ke Google Apps Script.
+                 * =================================================
+                 * PANGGIL GOOGLE APPS SCRIPT
+                 * =================================================
                  */
 
                 const result =
@@ -556,16 +737,20 @@ if (loginForm) {
 
 
                 console.log(
-                    "Response login:",
+                    "HASIL LOGIN:",
                     result
                 );
 
 
                 /*
-                 * Periksa hasil login.
+                 * =================================================
+                 * LOGIN GAGAL
+                 * =================================================
                  */
 
-                if (!result.success) {
+                if (
+                    result.success !== true
+                ) {
 
                     showMessage(
                         result.message ||
@@ -573,25 +758,29 @@ if (loginForm) {
                         "error"
                     );
 
+
                     return;
 
                 }
 
 
                 /*
-                 * Pastikan data files tersedia.
+                 * =================================================
+                 * PERIKSA FILE
+                 * =================================================
                  */
 
                 if (
-                    !Array.isArray(
+                    !validateFiles(
                         result.files
                     )
                 ) {
 
                     showMessage(
-                        "Login berhasil, tetapi daftar WebP tidak ditemukan.",
+                        "Login berhasil, tetapi daftar WebP tidak valid.",
                         "error"
                     );
+
 
                     return;
 
@@ -599,7 +788,9 @@ if (loginForm) {
 
 
                 /*
-                 * Simpan session.
+                 * =================================================
+                 * SIMPAN SESSION
+                 * =================================================
                  */
 
                 saveSession(
@@ -609,7 +800,9 @@ if (loginForm) {
 
 
                 /*
-                 * Tampilkan pesan berhasil.
+                 * =================================================
+                 * LOGIN BERHASIL
+                 * =================================================
                  */
 
                 showMessage(
@@ -619,14 +812,17 @@ if (loginForm) {
 
 
                 /*
-                 * Redirect ke Reader.
+                 * =================================================
+                 * REDIRECT
+                 * =================================================
                  */
 
                 setTimeout(
                     function () {
 
-                        window.location.href =
-                            LOGIN_CONFIG.redirectUrl;
+                        window.location.replace(
+                            LOGIN_CONFIG.redirectUrl
+                        );
 
                     },
                     LOGIN_CONFIG.redirectDelay
@@ -636,7 +832,7 @@ if (loginForm) {
             } catch (error) {
 
                 console.error(
-                    "Login error:",
+                    "LOGIN ERROR:",
                     error
                 );
 
@@ -649,7 +845,9 @@ if (loginForm) {
 
             } finally {
 
-                setLoading(false);
+                setLoading(
+                    false
+                );
 
             }
 
@@ -659,9 +857,9 @@ if (loginForm) {
 }
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    FORGOT PASSWORD
-   --------------------------------------------------------- */
+========================================================= */
 
 if (forgotPassword) {
 
@@ -683,9 +881,9 @@ if (forgotPassword) {
 }
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    REGISTER
-   --------------------------------------------------------- */
+========================================================= */
 
 if (registerLink) {
 
@@ -707,9 +905,9 @@ if (registerLink) {
 }
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    CHECK EXISTING SESSION
-   --------------------------------------------------------- */
+========================================================= */
 
 function checkExistingSession() {
 
@@ -719,25 +917,24 @@ function checkExistingSession() {
 
     if (!session) {
 
+        console.log(
+            "Tidak ada session."
+        );
+
         return;
 
     }
 
 
-    /*
-     * Jangan otomatis redirect.
-     *
-     * Ini tetap memungkinkan pengguna
-     * melihat halaman login.
-     */
-
     if (
-        session.loggedIn &&
-        Array.isArray(session.files)
+        session.loggedIn === true &&
+        Array.isArray(
+            session.files
+        )
     ) {
 
         console.log(
-            "Session Novel Reader ditemukan:",
+            "Session ditemukan:",
             {
                 username:
                     session.username,
@@ -755,8 +952,8 @@ function checkExistingSession() {
 }
 
 
-/* ---------------------------------------------------------
+/* =========================================================
    INITIALIZE
-   --------------------------------------------------------- */
+========================================================= */
 
 checkExistingSession();
