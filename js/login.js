@@ -17,7 +17,7 @@ const LOGIN_CONFIG = {
      * Google Apps Script Web App
      */
     apiUrl:
-        "https://script.google.com/macros/s/AKfycbyWqoJO_4qoYfFxNshOdd-jtIBfahASiaTmwD7POE56bCu0fBlnKdDpTuwwQPjUq6gOZg/exec",
+        "https://script.google.com/macros/s/AKfycbyJUFKi2cIQdlxtWQ6pYyHb6XhBfSgxKK6vjHRNNve0G6Lcyx9XQhJWLlBA3VbB3Q6tlQ/exec",
 
     /*
      * Halaman Reader setelah login berhasil.
