@@ -22,17 +22,27 @@
         <section class="login-card">
 
             <div class="brand">
+
                 <div class="brand-logo">
                     <img src="assets/logo.svg" alt="Novel Reader">
                 </div>
 
                 <h1>Novel Reader</h1>
-                <p>Masuk untuk melanjutkan membaca</p>
+
+                <p>
+                    Masuk untuk melanjutkan membaca
+                </p>
+
             </div>
 
 
-            <form id="loginForm" class="login-form" autocomplete="on">
+            <form
+                id="loginForm"
+                class="login-form"
+                autocomplete="on"
+            >
 
+                <!-- USERNAME -->
                 <div class="form-group">
 
                     <label for="username">
@@ -51,6 +61,7 @@
                 </div>
 
 
+                <!-- PASSWORD -->
                 <div class="form-group">
 
                     <label for="password">
@@ -82,6 +93,7 @@
                 </div>
 
 
+                <!-- OPTIONS -->
                 <div class="login-options">
 
                     <label class="remember">
@@ -92,18 +104,26 @@
                             name="remember"
                         >
 
-                        <span>Ingat saya</span>
+                        <span>
+                            Ingat saya
+                        </span>
 
                     </label>
 
-                    <a href="https://wa.me/6285722207569?text=Lupa%20password
-" id="forgotPassword">
+
+                    <a
+                        href="https://wa.me/6285722207569?text=saya%20lupa%20password."
+                        id="forgotPassword"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         Lupa password?
                     </a>
 
                 </div>
 
 
+                <!-- LOGIN MESSAGE -->
                 <div
                     id="loginMessage"
                     class="login-message"
@@ -112,15 +132,20 @@
                 ></div>
 
 
+                <!-- LOGIN BUTTON -->
                 <button
                     type="submit"
                     id="loginButton"
                     class="login-button"
                 >
+
+                    <!-- TAMPIL SAAT BELUM DIKLIK -->
                     <span id="loginButtonText">
                         Masuk
                     </span>
 
+
+                    <!-- TERSEMBUNYI SAAT AWAL -->
                     <span
                         id="loginLoading"
                         class="loading"
@@ -128,32 +153,52 @@
                     >
                         Memproses...
                     </span>
+
                 </button>
 
             </form>
 
 
+            <!-- DIVIDER -->
             <div class="divider">
-                <span>atau</span>
+
+                <span>
+                    atau
+                </span>
+
             </div>
 
 
+            <!-- REGISTER -->
             <div class="register-area">
 
                 <p>
+
                     Belum memiliki akun?
-                    <a href="https://wa.me/6285722207569?text=Saya%20ingin%20membeli%20Novel" id="registerLink" target="_blank">
+
+                    <a
+                        href="https://wa.me/6285722207569?text=Halo%2C%20saya%20ingin%20membeli%20Novel."
+                        id="registerLink"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
                         Daftar sekarang
                     </a>
+
                 </p>
-            
+
             </div>
 
 
+            <!-- FOOTER -->
             <footer class="login-footer">
 
                 <span>
-                    © <span id="year"></span> Novel Reader
+
+                    ©
+                    <span id="year"></span>
+                    Novel Reader
+
                 </span>
 
             </footer>
@@ -163,7 +208,52 @@
     </main>
 
 
+    <!-- JAVASCRIPT LOGIN -->
     <script src="js/login.js"></script>
+
+
+    <!-- JAVASCRIPT TOMBOL LOGIN -->
+    <script>
+
+        const loginForm =
+            document.getElementById("loginForm");
+
+        const loginButton =
+            document.getElementById("loginButton");
+
+        const loginButtonText =
+            document.getElementById("loginButtonText");
+
+        const loginLoading =
+            document.getElementById("loginLoading");
+
+
+        /*
+         * Saat form LOGIN dikirim
+         */
+        loginForm.addEventListener("submit", function () {
+
+            /*
+             * Sembunyikan tulisan "Masuk"
+             */
+            loginButtonText.hidden = true;
+
+
+            /*
+             * Tampilkan "Memproses..."
+             */
+            loginLoading.hidden = false;
+
+
+            /*
+             * Nonaktifkan tombol
+             * agar tidak diklik berkali-kali
+             */
+            loginButton.disabled = true;
+
+        });
+
+    </script>
 
 </body>
 </html>
